@@ -1,0 +1,38 @@
+---
+title: "project"
+author: "Brian Panjaitan"
+date: "28/02/2020"
+output: html_document
+---
+PROJECT B: ALBUM RATING
+```{r}
+library(selectr)
+library(xml2)
+library(rvest)
+library(stringr)
+library(jsonlite)
+library(magrittr)
+library(stringr)
+```
+I used https://www.analyticsvidhya.com/blog/2017/03/beginners-guide-on-web-scraping-in-r-using-rvest-with-hands-on-knowledge/ to figure out what packages I needed to install.
+
+```{r}
+pitchfork = function(url)
+{
+  siteURL <- url #put the link of the review into a variable 
+  reviewWebpage <- read_html(siteURL) # Read the variables as an HTML into a variable
+
+  text <- reviewWebpage %>% html_nodes(".review-detail__text") #create a variable holding the albums written review
+  text <- text %>% html_text(trim = TRUE) #remove all the HTML characters from the review
+  text <- gsub("[\r\n]", "", text) #remove all /n characters from the review
+
+  rating <- reviewWebpage %>% html_nodes(".score") #create a variable holding the albums rating score
+  rating <- rating %>% html_text(trim = TRUE) #remove all the HTML characters from the number rating.
+  
+  review <- data.frame(text, rating) #create a list holding the review and rating
+  return(review) #return the list holding the review and the number rating.
+}
+```
+
+url = 'https://pitchfork.com/reviews/albums/20054-2014-forest-hills-drive/'
+review = pitchfork(url)
